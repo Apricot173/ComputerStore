@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.apricot.store.Mapper.UserMapper">
+    <resultMap id="UserEntityMap" type="com.apricot.store.Entity.User">
+        <!-- 不可以省略主键id标签，且id标签必须在result标签之前，否则会报错   -->
+        <id column="uid" property="uid"/>
+        <!-- 某一列名和实体类属性名不一致时，需要通过column属性指定列名   -->
+        <result column="username" property="username"/>
+        <result column="email" property="email"/>
+        <result column="phone" property="phone"/>
+        <result column="gender" property="gender"/>
+        <result column="avatar" property="avatar"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="created_user" property="createdUser"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="modified_user" property="modifiedUser"/>
+        <result column="modified_time" property="modifiedTime"/>
+    </resultMap>
+
+    <!-- 插入用户数据：Integer insert(User user) -->
+    <!-- useGeneratedKeys="true" keyProperty="uid" 表示主键值uid由数据库自动生成 -->
+    <insert id = "insertUser"  useGeneratedKeys = "true" keyProperty = "uid">
+        INSERT INTO
+            t_user (username, password, salt, phone, email, gender, avatar, is_delete,
+                    created_user, created_time, modified_user, modified_time)
+        VALUES
+            (#{username}, #{password}, #{salt}, #{phone}, #{email}, #{gender}, #{avatar}, #{isDelete},
+             #{createdUser}, #{createdTime}, #{modifiedUser}, #{modifiedTime})
+    </insert>
+
+    <!-- 根据用户名查询用户数据：User getByUsername(String username) -->
+    <!-- resultType="com.apricot.store.entity.User" 表示返回值类型为User,
+         resultMap="UserEntityMap" 表示返回值类型为UserEntityMap -->
+    <select id="getByUsername" resultMap="UserEntityMap">
+        SELECT
+            *
+        FROM
+            t_user
+        WHERE
+            username = #{username}
+    </select>
+
+    <!-- 根据uid更新用户的密码：
+	     Integer updatePasswordByUid(
+		    @Param("uid") Integer uid,
+		    @Param("password") String password,
+		    @Param("modifiedUser") String modifiedUser,
+		    @Param("modifiedTime") Date modifiedTime) -->
+    <update id="updatePasswordByUid">
+        UPDATE
+            t_user
+        SET
+            password = #{password},
+            modified_user = #{modifiedUser},
+            modified_time = #{modifiedTime}
+        WHERE
+            uid = #{uid}
+    </update>
+
+    <!-- 根据用户id查询用户数据：User findByUid(Integer uid) -->
+    <select id="findByUid" resultMap="UserEntityMap">
+        SELECT
+            *
+        FROM
+            t_user
+        WHERE
+            uid = #{uid}
+    </select>
+
+    <!-- 根据uid更新用户个人资料：Integer updateInfoByUid(User user) -->
+    <update id="updateInfoByUid">
+        UPDATE
+        t_user
+        SET
+        <if test="phone != null">phone = #{phone},</if>
+        <if test="email != null">email = #{email},</if>
+        <if test="gender != null">gender = #{gender},</if>
+        modified_user = #{modifiedUser},
+        modified_time = #{modifiedTime}
+        WHERE
+        uid = #{uid}
+    </update>
+
+    <!-- 根据uid更新用户的头像
+	     Integer updateAvatarByUid(
+		    @Param("uid") Integer uid,
+		    @Param("avatar") String avatar,
+		    @Param("modifiedUser") String modifiedUser,
+		    @Param("modifiedTime") Date modifiedTime) -->
+    <update id="updateAvatarByUid">
+        UPDATE
+            t_user
+        SET
+            avatar = #{avatar},
+            modified_user = #{modifiedUser},
+            modified_time = #{modifiedTime}
+        WHERE
+            uid = #{uid}
+    </update>
+
+    <!-- 根据uid删除用户数据：Integer deleteByUid(Integer uid, String modifiedUser, Date modifiedTime) -->
+    <update id="deleteByUid">
+        UPDATE
+            t_user
+        SET
+            is_delete = 1,
+            modified_user = #{modifiedUser},
+            modified_time = #{modifiedTime}
+        WHERE
+            uid = #{uid}
+    </update>
+</mapper>
