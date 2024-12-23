@@ -2,12 +2,14 @@ package com.apricot.store.Entity;
 
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.Year;
 
 /**
  * OrderItem的实体类
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class OrderItem extends BaseEntity {
     private Integer id;
