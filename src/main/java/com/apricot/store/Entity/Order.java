@@ -2,6 +2,7 @@ package com.apricot.store.Entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
@@ -11,6 +12,7 @@ import java.util.Date;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Accessors(chain = true)
 public class Order extends BaseEntity {
     private Integer oid;
     private Integer uid;
