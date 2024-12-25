@@ -281,9 +281,6 @@
 						alert("购物车为空");
 						location.href = "cart.html";
 					}
-					console.log(JSON.stringify({
-						cids : cids
-					}));
 					// 清空前端写死购物车
 					$("#cart-list").empty();
 					// 依据uid获取所有购物车数据
@@ -299,15 +296,13 @@
 							let tCount = 0;
 							let tPrice = 0;
 							for (let i = 0; i < list.length; i++) {
-								let tr = '<tbody id="cart-list" class="cart-body">\n' +
-										'<tr>\n' +
+								let tr = '<tr>\n' +
 										'<td><img src="..#{image}collect.png" class="img-responsive" /></td>\n' +
 										'<td>#{title}</td>\n' +
 										'<td>¥<span>#{realPrice}</span></td>\n' +
 										'<td>#{num}</td>\n' +
 										'<td><span>#{totalPrice}</span></td>\n' +
-										'</tr>\n' +
-										'</tbody>';
+										'</tr>\n';
 								tr = tr.replaceAll(/#{cid}/g, list[i].cid);
 								tr = tr.replace(/#{title}/g, list[i].title);
 								tr = tr.replace(/#{image}/g, list[i].image);
