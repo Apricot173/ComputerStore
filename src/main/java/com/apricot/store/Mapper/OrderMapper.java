@@ -4,8 +4,12 @@ import com.apricot.store.Entity.Order;
 import com.apricot.store.Entity.OrderItem;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.time.Year;
+import java.util.Date;
+import java.util.List;
 
 public interface OrderMapper {
     // Order 插入一条记录
@@ -21,4 +25,15 @@ public interface OrderMapper {
     @Insert("insert into t_order_item(oid,pid,title,image,price,num,created_user,created_time,modified_user,modified_time)" +
             "values (#{oid},#{pid},#{title},#{image},#{price},#{num},#{createdUser},#{createdTime},#{modifiedUser},#{modifiedTime})")
     Integer insertAnOrderItem(OrderItem orderItem);
+
+    // 查找
+    @Select("select * from t_order where oid = #{oid}")
+    Order queryOrderByOid(Integer oid);
+
+    @Select("select * from t_order_item where oid = #{oid}")
+    List<OrderItem> queryOrderItemsByOid(Integer oid);
+
+    // 更新支付状态
+    @Update("update t_order set status = #{status}, pay_time = #{payTime} where oid = #{oid}")
+    Integer updateStatusByOid(Integer oid, Integer status, Date payTime);
 }
