@@ -45,4 +45,11 @@ public class CartMapperTests {
         cartMapper.deleteCartByCid(5);
     }
 
+    @Test
+    public void testQueryCartByCidList() {
+        //Integer[] cids = {1, 2, 3};
+        List<CartVo> carts = cartMapper.queryCartByCidList(List.of(1, 2, 3));
+        carts.forEach(System.out::println);
+    }
+
 }

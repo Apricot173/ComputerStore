@@ -2,6 +2,7 @@ package com.apricot.store.Controller;
 
 import com.apricot.store.Entity.Cart;
 import com.apricot.store.Entity.dto.CartVo;
+import com.apricot.store.Entity.dto.ListedCartsDto;
 import com.apricot.store.Service.ICartService;
 import com.apricot.store.Utils.JsonResult;
 import jakarta.servlet.http.HttpSession;
@@ -9,6 +10,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -36,6 +38,16 @@ public class CartController extends BaseController {
             return new JsonResult(499, "购物车为空", null);
         }
         return new JsonResult(SUCCESS_CODE, "查询购物车成功", carts);
+    }
+
+    @PostMapping("/queryListedCarts")
+    public JsonResult queryListedCarts(@RequestBody ListedCartsDto dto) {
+        List<CartVo> carts = cartService.queryCartsByCidList(dto.getCids());
+        if (carts.isEmpty()) {
+            return new JsonResult(499, "待结算的数据不能为空", null);
+        }
+        return new JsonResult(SUCCESS_CODE, "查询待结算数据成功", carts);
+
     }
 
     @DeleteMapping("/deleteCart/{cid}")

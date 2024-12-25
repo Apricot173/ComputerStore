@@ -12,6 +12,8 @@ public interface ICartService {
 
     public List<CartVo> queryCartsByUid(Integer uid);
 
+    public List<CartVo> queryCartsByCidList(List<Integer> cidList);
+
     public void deleteCartByCid(Integer cid, Integer uid);
 
     public void updateCartNum(Integer cid, Integer newNum, Integer uid, String modifiedBy);

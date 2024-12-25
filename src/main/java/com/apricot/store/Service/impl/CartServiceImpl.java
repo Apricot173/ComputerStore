@@ -64,6 +64,11 @@ public class CartServiceImpl implements ICartService {
     }
 
     @Override
+    public List<CartVo> queryCartsByCidList(List<Integer> cidList) {
+        return cartMapper.queryCartByCidList(cidList);
+    }
+
+    @Override
     public void deleteCartByCid(Integer cid, Integer uid) {
         Cart target = cartMapper.queryCartByCid(cid);
         if (target == null)

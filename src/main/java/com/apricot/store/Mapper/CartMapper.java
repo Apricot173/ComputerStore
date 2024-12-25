@@ -36,6 +36,16 @@ public interface CartMapper {
             "WHERE c.`uid` = #{uid} ORDER BY c.created_time DESC")
     public List<CartVo> queryCartByUid(Integer uid);
 
+    // 根据cid列表获取所有购物车记录
+    @Select({"<script>",
+            "SELECT c.cid,c.pid,c.`uid`,c.price,c.num,p.title,p.image,p.`price`" +
+            "AS real_price FROM t_cart c LEFT JOIN t_product p ON c.pid = p.`id`" +
+            "WHERE c.cid IN (" +
+                    "<foreach collection='cidList' item='cid' separator=','>#{cid}</foreach>" +
+                    ") ORDER BY c.created_time DESC",
+            "</script>"})
+    public List<CartVo> queryCartByCidList(List<Integer> cidList);
+
     // 根据cid删除购物车记录
     @Delete("DELETE FROM t_cart WHERE cid = #{cid}")
     public Integer deleteCartByCid(Integer cid);

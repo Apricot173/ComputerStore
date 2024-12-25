@@ -214,10 +214,6 @@
 								<a href="#">
 									<p>关于我们</p>
 								</a>
-							</li>
-							<li><a href="#">关于圆心</a></li>
-							<li><a href="#">联系我们</a></li>
-							<li>
 								<span class="fa fa-wechat"></span>
 								<span class="fa fa-weibo"></span>
 							</li>
@@ -231,17 +227,107 @@
 						<img src="../images/index/android.png" alt="" class="lf" />
 					</div>
 					<div class="col-md-6">
-						<img src="../images/index/erweima.png">
+
 					</div>
 				</div>
 			</div>
-			<!-- 页面底部-备案号 #footer -->
-			<div class="col-md-12 text-center bottom">
-				Copyright © 2022 dnsc.cn All Rights Reserved 京ICP备08963888号-45 <a target="_blank" href="http://www.dnsc.cn/">圆心科技集团有限公司</a> 版权所有
-			</div>
+
 
 		</footer>
 		<!--页脚结束-->
+		<script type="text/javascript">
+			// 页面加载完成 查询用户的所有收货地址 并逐个加入到address-list下拉列表中
+			$(document).ready(function() {
+				$("#address-list").empty();
+				$.ajax({
+					type: "GET",
+					url: "/address/queryAddresses",
+					contentType: "application/json",
+					success: function (json) {
+						if (json.status === 200) {
+							let addressList = json.data;
+							for (let i = 0; i < addressList.length; i++) {
+								let address = addressList[i];
+								let option = '<option>#{name}&nbsp;&nbsp;&nbsp;#{tag}&nbsp;&nbsp;&nbsp;#{provinceName}#{cityName}#{areaName}#{address}&nbsp;&nbsp;&nbsp;#{phone}</option>';
+								option = option.replace("#{name}", address.name);
+								option = option.replace("#{tag}", address.tag);
+								option = option.replace("#{provinceName}", address.provinceName);
+								option = option.replace("#{cityName}", address.cityName);
+								option = option.replace("#{areaName}", address.areaName);
+								option = option.replace("#{address}", address.address);
+								option = option.replace("#{phone}", address.phone);
+								$("#address-list").append(option);
+							}
+						} else {
+							console.log("查询收货地址失败: " + data.message);
+						}
+
+					},
+					error: function (xhr) {
+						console.log("error: " + xhr.status);
+					}
+				});
+				// 还要实现从上一个拿到CID列表，然后根据CID列表查询订单详情，然后显示到页面上
+				$(document).ready(function() {
+					showCart();
+				});
+			});
+			</script>
+			<script type="text/javascript">
+				function showCart() {
+					// 从sessionStorage中获取cid列表
+					let cids = JSON.parse(sessionStorage.getItem("cids"));
+					if (cids === null) {
+						alert("购物车为空");
+						location.href = "cart.html";
+					}
+					console.log(JSON.stringify({
+						cids : cids
+					}));
+					// 清空前端写死购物车
+					$("#cart-list").empty();
+					// 依据uid获取所有购物车数据
+					$.ajax({
+						url: "/cart/queryListedCarts",
+						type: "POST",
+						data:  JSON.stringify({
+							cids : cids
+						}),
+						contentType: "application/json",
+						success: function(json) {
+							let list = json.data;
+							let tCount = 0;
+							let tPrice = 0;
+							for (let i = 0; i < list.length; i++) {
+								let tr = '<tbody id="cart-list" class="cart-body">\n' +
+										'<tr>\n' +
+										'<td><img src="..#{image}collect.png" class="img-responsive" /></td>\n' +
+										'<td>#{title}</td>\n' +
+										'<td>¥<span>#{realPrice}</span></td>\n' +
+										'<td>#{num}</td>\n' +
+										'<td><span>#{totalPrice}</span></td>\n' +
+										'</tr>\n' +
+										'</tbody>';
+								tr = tr.replaceAll(/#{cid}/g, list[i].cid);
+								tr = tr.replace(/#{title}/g, list[i].title);
+								tr = tr.replace(/#{image}/g, list[i].image);
+								tr = tr.replace(/#{realPrice}/g, list[i].realPrice);
+								tr = tr.replaceAll(/#{num}/g, list[i].num);
+								tr = tr.replace(/#{totalPrice}/g, list[i].realPrice * list[i].num);
+
+								$("#cart-list").append(tr);
+								tCount += list[i].num;
+								tPrice += list[i].realPrice * list[i].num;
+
+							}
+							$("#all-count").html(tCount);
+							$("#all-price").html(tPrice);
+						},
+
+					});
+				}
+			</script>
+
 	</body>
 
 </html>

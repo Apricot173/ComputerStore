@@ -174,7 +174,7 @@
 							</div>
 							<div>
 								<span class="pull-right">
-								<input type="submit" value="  结  算  " class="btn btn-primary btn-lg link-account" />
+								<input id = "submit-btn" type="button" value="  结  算  " class="btn btn-primary btn-lg link-account" />
 							</span>
 							</div>
 						</form>
@@ -276,7 +276,23 @@
 			})
 
 			$(document).ready(function() {
+				//let cids = [];
 				showCart();
+				$("#submit-btn").click(function() {
+					// 将勾选的商品id存入sessionStorage
+					let cids = [];
+					let ckitems = $(".ckitem");
+					for (let i = 0; i < ckitems.length; i++) {
+						if ($(ckitems[i]).prop("checked")) {
+							cids.push($(ckitems[i]).val());
+						}
+					}
+					sessionStorage.setItem("cids", JSON.stringify(cids));
+
+					let c = JSON.parse(sessionStorage.getItem("cids"));
+					console.log(c);
+					// 跳转
+				});
 			});
 		</script>
 
@@ -322,14 +338,12 @@
 								tr = tr.replace(/#{msg}/g, "");
 							}
 							$("#cart-list").append(tr);
-
+							//cids.push(list[i].cid);
 						}
 					},
 
 				});
-
-
-
+				//console.log(cids);
 			}
 		</script>
 		<script src="../js/search.js" type="text/javascript" charset="utf-8"></script>
