@@ -9,7 +9,7 @@ public interface IOrderService {
      * @param aid 用以查询订单保存的address相关信息
      * @param totalPrice 订单总价
      */
-    public void insertOrder(Integer uid,
+    public Integer insertOrder(Integer uid,
                             String username,
                             Integer aid,
                             Long totalPrice);

@@ -20,10 +20,20 @@ public class OrderController extends BaseController{
     private IOrderService orderService;
 
     @PostMapping("/createOrder")
-    public JsonResult createOrder(@RequestBody List<Integer> cidList, HttpSession session){
-        return null;
+    public JsonResult createOrder(Integer aid, Long totalPrice ,HttpSession session){
+        //System.out.println("aid: " + aid + " totalPrice: " + totalPrice);
+        Integer uid = getUserIdFromSession(session);
+        String username = getUsernameFromSession(session);
+        Integer oid = orderService.insertOrder(uid, username, aid, totalPrice);
+        //System.out.println("oid: " + oid);
+        return new JsonResult(SUCCESS_CODE, "创建订单成功", oid);
     }
 
-
+    @PostMapping("/createOrderItem")
+    public JsonResult createOrderItem(Integer oid, Integer cid, HttpSession session) {
+        String username = getUsernameFromSession(session);
+        orderService.insertOrderItem(username, oid, cid);
+        return new JsonResult(SUCCESS_CODE, "创建订单项成功",null);
+    }
 
 }

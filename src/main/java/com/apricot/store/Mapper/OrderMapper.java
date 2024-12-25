@@ -3,6 +3,7 @@ package com.apricot.store.Mapper;
 import com.apricot.store.Entity.Order;
 import com.apricot.store.Entity.OrderItem;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Options;
 
 import java.time.Year;
 
@@ -13,6 +14,7 @@ public interface OrderMapper {
             "values (#{uid},#{recvName},#{recvPhone},#{recvProvince},#{recvCity},#{recvArea},#{recvAddress},\n" +
             "#{totalPrice},#{status},#{orderTime},#{payTime},#{createdUser},#{createdTime}," +
             "#{modifiedUser},#{modifiedTime})")
+    @Options(useGeneratedKeys = true, keyProperty = "oid")
     Integer insertAnOrder(Order order);
 
     // OrderItem 插入一条记录

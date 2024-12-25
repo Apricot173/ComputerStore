@@ -248,7 +248,8 @@
 							let addressList = json.data;
 							for (let i = 0; i < addressList.length; i++) {
 								let address = addressList[i];
-								let option = '<option>#{name}&nbsp;&nbsp;&nbsp;#{tag}&nbsp;&nbsp;&nbsp;#{provinceName}#{cityName}#{areaName}#{address}&nbsp;&nbsp;&nbsp;#{phone}</option>';
+								let option = '<option itemid="#{aid}" >#{name}&nbsp;&nbsp;&nbsp;#{tag}&nbsp;&nbsp;&nbsp;#{provinceName}#{cityName}#{areaName}#{address}&nbsp;&nbsp;&nbsp;#{phone}</option>';
+								option = option.replace("#{aid}", address.aid);
 								option = option.replace("#{name}", address.name);
 								option = option.replace("#{tag}", address.tag);
 								option = option.replace("#{provinceName}", address.provinceName);
@@ -260,7 +261,7 @@
 							}
 						} else {
 							//console.log("查询收货地址失败: " + data.message);
-							alert("收货地址失败: " + data.message);
+							alert("收货地址查询失败: " + data.message);
 							location.href = "addAddress.html";
 
 						}
@@ -275,7 +276,6 @@
 				// 也需要在那个页面生成购物车并将cid存入sessionStorage
 				let cids = JSON.parse(sessionStorage.getItem("cids"));
 				showCart(cids);
-
 			});
 			</script>
 			<script type="text/javascript">
@@ -319,6 +319,77 @@
 							$("#all-price").html(tPrice);
 						},
 
+					});
+				}
+
+
+				// 点击结算 生成订单 最后跳转到支付
+				$("#btn-create-order").click(function() {
+					let oid;
+					let cids = JSON.parse(sessionStorage.getItem("cids"));
+					// 拿到后端需要的aid 和 totalPrice
+					let aid = $("#address-list").find("option:selected").attr("itemid");
+					let totalPrice = $("#all-price").html();
+					console.log("aid: " + aid + " totalPrice: " + totalPrice);
+
+					$.ajax({
+						url: "/order/createOrder",
+						type: "POST",
+						data:{
+							aid: aid,
+							totalPrice: totalPrice
+						},
+						dataType: "json",
+						//contentType: "application/json",
+						success: function(json) {
+							if (json.status === 200) {
+								oid = json.data;
+								for (let i = 0; i < cids.length; i++) {
+									addOrderItem(oid, cids[i]);
+								}
+							}
+							// 清空cid的购物车和sessionStorage记录
+							for (let i = 0; i < cids.length; i++) {
+								delCart(cids[i]);
+							}
+							sessionStorage.removeItem("cids");
+							location.href = "payment.html?oid=" + oid;
+						},
+
+					});
+				});
+
+				function addOrderItem(oid,cid) {
+					$.ajax({
+						url: "/order/createOrderItem",
+						type: "POST",
+						data:{
+							oid: oid,
+							cid: cid
+						},
+						dataType: "json",
+						//contentType: "application/json",
+						success: function(json) {
+							if (json.status === 200) {
+								console.log("添加订单项成功");
+							} else {
+								console.log("添加订单项失败: " + json.message);
+							}
+						},
+					});
+				}
+
+				function delCart(cid) {
+					$.ajax({
+						url: "/cart/deleteCart/" + cid,
+						type: "DELETE",
+						success: function(result) {
+							if (result.status === 200) {
+								console.log("删除数据");
+							} else {
+								console.log("删除失败！" + result.message);
+							}
+						}
 					});
 				}
 			</script>

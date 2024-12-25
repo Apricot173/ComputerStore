@@ -26,7 +26,7 @@ public class OrderServiceImpl implements IOrderService {
     private AddressMapper addressMapper;
 
     @Override
-    public void insertOrder(Integer uid, String username, Integer aid, Long totalPrice) {
+    public Integer insertOrder(Integer uid, String username, Integer aid, Long totalPrice) {
         Order target = new Order();
 
         Address address = addressMapper.getAddressByAid(aid);
@@ -44,6 +44,7 @@ public class OrderServiceImpl implements IOrderService {
         if (result != 1) {
             throw new InsertException("订单添加失败！");
         }
+        return target.getOid();
     }
 
     @Override
