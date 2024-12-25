@@ -27,7 +27,7 @@ public class CartServiceImpl implements ICartService {
      * @param username 用户名
      */
     @Override
-    public void addToCart(Cart cart, String username) {
+    public Integer addToCart(Cart cart, String username) {
         // 先查询该用户是否有该商品的购物车记录
         Cart existCart = cartMapper.queryCartByUidAndPid(cart.getUid(), cart.getPid());
         if (existCart == null) {
@@ -40,6 +40,7 @@ public class CartServiceImpl implements ICartService {
             if (rows != 1) {
                 throw new InsertException("新增购物车记录失败，请稍后再试！");
             }
+            return cartMapper.queryCartByUidAndPid(cart.getUid(), cart.getPid()).getCid();
         }
         // 该用户有该商品的购物车记录，更新数量和价格
         else {
@@ -50,6 +51,7 @@ public class CartServiceImpl implements ICartService {
             if (rows != 1) {
                 throw new UpdateException("更新购物车记录失败，请稍后再试！");
             }
+            return existCart.getCid();
         }
     }
 

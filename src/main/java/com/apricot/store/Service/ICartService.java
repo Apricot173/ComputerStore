@@ -6,7 +6,7 @@ import com.apricot.store.Entity.dto.CartVo;
 import java.util.List;
 
 public interface ICartService {
-    public void addToCart(Cart cart, String username);
+    public Integer addToCart(Cart cart, String username);
 
     public Cart queryCartByUidAndPid(Integer uid, Integer pid);
 

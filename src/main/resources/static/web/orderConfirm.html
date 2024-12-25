@@ -274,14 +274,7 @@
 				// 假如从Product页面跳转过来，只购买单样商品
 				// 也需要在那个页面生成购物车并将cid存入sessionStorage
 				let cids = JSON.parse(sessionStorage.getItem("cids"));
-				if (cids === null) {
-					alert("购物车为空");
-					location.href = "cart.html";
-				} else {
-					showCart(cids);
-				}
-
-
+				showCart(cids);
 			});
 			</script>
 			<script type="text/javascript">

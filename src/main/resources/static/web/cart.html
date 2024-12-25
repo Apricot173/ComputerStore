@@ -280,12 +280,16 @@
 							cids.push($(ckitems[i]).val());
 						}
 					}
-					sessionStorage.setItem("cids", JSON.stringify(cids));
-
+					if (cids.length === 0) {
+						alert("你还未选择商品");
+					} else {
+						sessionStorage.setItem("cids", JSON.stringify(cids));
+						location.href = "orderConfirm.html";
+					}
 					// let c = JSON.parse(sessionStorage.getItem("cids"));
 					// console.log(c);
 					// 跳转
-					location.href = "orderConfirm.html";
+
 				});
 			});
 		</script>

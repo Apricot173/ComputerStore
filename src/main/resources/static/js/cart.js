@@ -42,7 +42,7 @@ function delCartItem(btn, cid) {
 			type: "DELETE",
 			success: function(result) {
 				if (result.status === 200) {
-					alert("删除成功！");
+					console.log("删除数据");
 					showCart();
 				} else {
 					alert("删除失败！");
@@ -65,9 +65,6 @@ function selDelCart() {
 				//console.log("cid:" + cid);
 				// 删除后台数据
 				delCartItem(this, cid);
-
-				// 删除前端展示
-				$($(".ckitem")[i]).parents("tr").remove();
 			}
 		}
 	}

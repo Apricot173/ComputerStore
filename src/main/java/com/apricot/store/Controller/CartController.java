@@ -26,8 +26,8 @@ public class CartController extends BaseController {
         Integer uid = getUserIdFromSession(session);
         String username = getUsernameFromSession(session);
         cart.setUid(uid);
-        cartService.addToCart(cart, username);
-        return new JsonResult(SUCCESS_CODE, "加入购物车成功", null);
+        Integer cid = cartService.addToCart(cart, username);
+        return new JsonResult(SUCCESS_CODE, "加入购物车成功", cid);
     }
 
     @GetMapping("/queryCarts")
