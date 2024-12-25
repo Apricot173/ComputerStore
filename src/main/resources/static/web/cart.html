@@ -268,13 +268,6 @@
 		<!--页脚结束-->
 		<script type="text/javascript">
 
-			$(function() {
-				//返回链接
-				$(".link-account").click(function() {
-					location.href = "orderConfirm.html";
-				})
-			})
-
 			$(document).ready(function() {
 				//let cids = [];
 				showCart();
@@ -289,9 +282,10 @@
 					}
 					sessionStorage.setItem("cids", JSON.stringify(cids));
 
-					let c = JSON.parse(sessionStorage.getItem("cids"));
-					console.log(c);
+					// let c = JSON.parse(sessionStorage.getItem("cids"));
+					// console.log(c);
 					// 跳转
+					location.href = "orderConfirm.html";
 				});
 			});
 		</script>

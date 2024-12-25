@@ -259,28 +259,34 @@
 								$("#address-list").append(option);
 							}
 						} else {
-							console.log("查询收货地址失败: " + data.message);
-						}
+							//console.log("查询收货地址失败: " + data.message);
+							alert("收货地址失败: " + data.message);
+							location.href = "addAddress.html";
 
+						}
 					},
 					error: function (xhr) {
 						console.log("error: " + xhr.status);
+						location.href = "addAddress.html";
 					}
 				});
-				// 还要实现从上一个拿到CID列表，然后根据CID列表查询订单详情，然后显示到页面上
-				$(document).ready(function() {
-					showCart();
-				});
+				// 从sessionStorage中获取cid列表
+				// 假如从Product页面跳转过来，只购买单样商品
+				// 也需要在那个页面生成购物车并将cid存入sessionStorage
+				let cids = JSON.parse(sessionStorage.getItem("cids"));
+				if (cids === null) {
+					alert("购物车为空");
+					location.href = "cart.html";
+				} else {
+					showCart(cids);
+				}
+
+
 			});
 			</script>
 			<script type="text/javascript">
-				function showCart() {
-					// 从sessionStorage中获取cid列表
-					let cids = JSON.parse(sessionStorage.getItem("cids"));
-					if (cids === null) {
-						alert("购物车为空");
-						location.href = "cart.html";
-					}
+				function showCart(cids) {
+
 					// 清空前端写死购物车
 					$("#cart-list").empty();
 					// 依据uid获取所有购物车数据
