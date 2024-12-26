@@ -347,7 +347,7 @@
 										.replace("#{name}", address.name)
 										.replace("#{address}", addstr)
 										.replace("#{phone}", address.phone)
-										.replace("#{aid}", address.aid);
+										.replaceAll("#{aid}", address.aid);
 
 								$("#address-list").append(str);
 							}

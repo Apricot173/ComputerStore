@@ -84,6 +84,15 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
+    public Order queryOrderByOid(Integer oid) {
+        Order target = orderMapper.queryOrderByOid(oid);
+        if (target == null) {
+            throw new OrderNotFoundException("订单不存在！");
+        }
+        return target;
+    }
+
+    @Override
     public Integer updateOrderStatus(Integer oid, Integer status, String modifiedBy) {
         Order target = orderMapper.queryOrderByOid(oid);
         if (target == null) {

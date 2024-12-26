@@ -1,5 +1,6 @@
 package com.apricot.store.Service;
 
+import com.apricot.store.Entity.Order;
 import com.apricot.store.Entity.OrderItem;
 
 import java.util.List;
@@ -23,6 +24,8 @@ public interface IOrderService {
                                 Integer cid);
 
     public List<OrderItem> queryOrderItemByOid(Integer oid);
+
+    public Order queryOrderByOid(Integer oid);
 
     public Integer updateOrderStatus(Integer oid, Integer status, String modifiedBy);
 }

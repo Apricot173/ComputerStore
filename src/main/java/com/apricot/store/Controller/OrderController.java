@@ -1,15 +1,14 @@
 package com.apricot.store.Controller;
 
+import com.apricot.store.Entity.Order;
 import com.apricot.store.Service.IOrderService;
 import com.apricot.store.Utils.JsonResult;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 
 @RestController
@@ -36,4 +35,22 @@ public class OrderController extends BaseController{
         return new JsonResult(SUCCESS_CODE, "创建订单项成功",null);
     }
 
+    @GetMapping("/getOrderDetail/{oid}")
+    public JsonResult getOrderDetail(@PathVariable Integer oid, HttpSession session) {
+        Order target =  orderService.queryOrderByOid(oid);
+        if (!Objects.equals(target.getUid(), getUserIdFromSession(session))) {
+            return new JsonResult(498, "无权限查看该订单", null);
+        }
+        return new JsonResult(SUCCESS_CODE, "获取订单详情成功", target);
+    }
+
+    @PostMapping("/updateOrderStatus/{oid}/{status}")
+    public JsonResult updateOrderStatus(@PathVariable Integer oid,
+                                        @PathVariable Integer status,
+                                        HttpSession session) {
+        Integer uid = getUserIdFromSession(session);
+        String username = getUsernameFromSession(session);
+        Integer newStatus = orderService.updateOrderStatus(oid, status, username);
+        return new JsonResult(SUCCESS_CODE, "更新订单状态成功", newStatus);
+    }
 }

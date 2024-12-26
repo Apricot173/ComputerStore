@@ -1,10 +1,13 @@
 package com.apricot.store.Service;
 
+import com.apricot.store.Entity.OrderItem;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -35,6 +38,16 @@ public class OrderServiceTests {
     public void testUpdateOrderStatus_0() {
         try {
             orderService.updateOrderStatus(3, 1, "admin");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testQueryOrder() {
+        try {
+            List<OrderItem> items = orderService.queryOrderItemByOid(10);
+            items.forEach(item -> System.out.println(item.toString()));
         } catch (Exception e) {
             e.printStackTrace();
         }

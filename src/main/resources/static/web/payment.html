@@ -108,36 +108,27 @@
 						3.付款成功
 					</div>
 				</div>
-				<div class="col-md-12">
+				<div style="padding-top: 15px;padding-bottom: 15px"></div>
+				<p></p>
+				<div class="col-md-12" style="padding-top: 20px">
 					<form role="form">
-						<div class="form-group">
-							<label for="name">
-								<p>选择支付方式：</p>
-							</label>
-							<div class="text-center">
-								<label class="radio-inline">
-									<input type="radio" name="optionsRadios" id="optionsRadios1" checked="checked"> 支付宝
-								</label>
-								<label class="radio-inline">
-									<input type="radio" name="optionsRadios" id="optionsRadios2"> 微信
-								</label>
-								<label class="radio-inline">
-									<input type="radio" name="optionsRadios" id="optionsRadios3"> 网银
-								</label>
-								<label class="radio-inline">
-									<input type="radio" name="optionsRadios" id="optionsRadios4"> 货到付款
-								</label>
-							</div>
-						</div>
-						<div>订单号：1101000301，支付金额¥5298，收款方 本电脑商城</div>
-						<div class="pay-bar">
-							<a href="cart.html">返回购物车</a>
-							<span class="pull-right">¥5298.00 <input type="button" value="确认付款" class="btn btn-primary btn-lg link-success"/></span>
+						<input id="oid" type="hidden" name="oid" value="">
+						<input id="totalPrice" type="hidden" name="totalPrice" value="">
+						<div>订单号：<span id="orderId"  style="color: red;font-weight: bold" ></span>&nbsp;，
+							支付金额¥&nbsp;<span id="orderPrice" style="color: red;font-weight: bold"></span>&nbsp;，收款方 电脑商城</div>
+						<div class="pay-bar" style="padding-top: 30px">
+							<a href="cart.html" style="padding: 0 15px">返回购物车</a>
+							<a onclick="return cancelOrder($('#oid').val())">取消支付</a>
+							<span class="pull-right">
+								<span id="rightPrice" style="color: red;font-weight: bold"></span>
+								<input type="button" onclick="payOrder()" value="确认付款" class="btn btn-primary btn-lg link-success"/>
+							</span>
 						</div>
 					</form>
 				</div>
 			</div>
 		</div>
+
 		<!--页脚开始-->
 		<div class="clearfix"></div>
 		<footer class="footer">
@@ -222,6 +213,62 @@
 			</div>
 		</footer>
 		<!--页脚结束-->
+		<script type="text/javascript" src="../js/jquery-getUrlParam.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function () {
+				let oid = $.getUrlParam("oid");
+				console.log("oid = "+ oid);
+
+				$.ajax({
+					url: "/order/getOrderDetail/" + oid,
+					type: "GET",
+					contentType: "application/json",
+					success: function (data) {
+						if (data.status === 200) {
+							let order = data.data;
+							$('#orderId').text(order.oid);
+							$('#orderPrice').text(order.totalPrice);
+							$('#rightPrice').text("￥" + order.totalPrice + " ");
+							$('#oid').val(order.oid);
+							$('#totalPrice').val(order.totalPrice);
+						} else {
+							location.href = "500.html";
+						}
+					},
+					error: function () {
+						location.href = "500.html";
+					}
+				});
+			})
+
+			function cancelOrder(oid){
+				if (confirm("确定要取消该订单码？")){
+					$.ajax({
+						url: "/order/updateOrderStatus/" + oid + "/2",
+						type: "post",
+						success:function (res) {
+							console.log("将订单"+oid+"状态改为" + res.status);
+							location.href = "orders.html"
+						}
+					})
+				}
+			}
+
+			function payOrder() {
+				let oid = $('#oid').val();
+				let totalPrice = $('#totalPrice').val();
+				if (confirm("确认支付吗？")) {
+					$.ajax({
+						url: "/order/updateOrderStatus/" + oid + "/1",
+						type: "post",
+						success: function (res) {
+							console.log("将订单" + oid + "状态改为" + res.status);
+							location.href = "paySuccess.html?oid=" + oid + "&totalPrice=" + totalPrice;
+						}
+					});
+				}
+			}
+			</script>
 	</body>
 
 </html>
