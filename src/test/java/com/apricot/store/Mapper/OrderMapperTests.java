@@ -45,7 +45,7 @@ public class OrderMapperTests {
 
     @Test
     public void testUpdate() {
-        Integer rows = orderMapper.updateStatusByOid(1, 4, new Date());
+        Integer rows = orderMapper.updateStatusByOid(1, 4, new Date(), "admin", new Date());
         System.out.println(rows);
     }
 

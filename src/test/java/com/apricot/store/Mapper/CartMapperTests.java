@@ -52,4 +52,10 @@ public class CartMapperTests {
         carts.forEach(System.out::println);
     }
 
+    @Test
+    public void testSelectCidByUidAndPid() {
+        Integer cid = cartMapper.queryCidByUidAndPid(1000, 10000017);
+        System.out.println(cid);
+    }
+
 }

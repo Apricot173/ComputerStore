@@ -1,5 +1,9 @@
 package com.apricot.store.Service;
 
+import com.apricot.store.Entity.OrderItem;
+
+import java.util.List;
+
 public interface IOrderService {
 
     /**
@@ -17,4 +21,8 @@ public interface IOrderService {
     public void insertOrderItem(String username,
                                 Integer oid,
                                 Integer cid);
+
+    public List<OrderItem> queryOrderItemByOid(Integer oid);
+
+    public Integer updateOrderStatus(Integer oid, Integer status, String modifiedBy);
 }

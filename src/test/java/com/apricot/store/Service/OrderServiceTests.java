@@ -31,4 +31,13 @@ public class OrderServiceTests {
         }
     }
 
+    @Test
+    public void testUpdateOrderStatus_0() {
+        try {
+            orderService.updateOrderStatus(3, 1, "admin");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -34,6 +34,7 @@ public interface OrderMapper {
     List<OrderItem> queryOrderItemsByOid(Integer oid);
 
     // 更新支付状态
-    @Update("update t_order set status = #{status}, pay_time = #{payTime} where oid = #{oid}")
-    Integer updateStatusByOid(Integer oid, Integer status, Date payTime);
+    @Update("update t_order set status = #{status}, pay_time = #{payTime}, " +
+            "modified_user = #{modifiedUser}, modified_time = #{modifiedTime} where oid = #{oid}")
+    Integer updateStatusByOid(Integer oid, Integer status, Date payTime, String modifiedUser, Date modifiedTime);
 }

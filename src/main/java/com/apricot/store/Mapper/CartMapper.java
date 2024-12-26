@@ -15,6 +15,10 @@ public interface CartMapper {
     @Select("SELECT * FROM t_cart WHERE uid = #{uid} AND pid = #{pid}")
     public Cart queryCartByUidAndPid(Integer uid, Integer pid);
 
+    // 根据uid和pid查询cid
+    @Select("SELECT cid FROM t_cart WHERE uid = #{uid} AND pid = #{pid}")
+    public Integer queryCidByUidAndPid(Integer uid, Integer pid);
+
     // 根据cid查询购物车记录
     @Select("SELECT * FROM t_cart WHERE cid = #{cid}")
     public Cart queryCartByCid(Integer cid);
