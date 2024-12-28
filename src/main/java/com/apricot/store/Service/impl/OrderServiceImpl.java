@@ -1,6 +1,7 @@
 package com.apricot.store.Service.impl;
 
 import com.apricot.store.Entity.*;
+import com.apricot.store.Entity.dto.OrderVo;
 import com.apricot.store.Mapper.AddressMapper;
 import com.apricot.store.Mapper.CartMapper;
 import com.apricot.store.Mapper.OrderMapper;
@@ -13,8 +14,10 @@ import com.apricot.store.Service.ex.UpdateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Year;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class OrderServiceImpl implements IOrderService {
@@ -124,5 +127,27 @@ public class OrderServiceImpl implements IOrderService {
         }
 
         return status;
+    }
+
+    @Override
+    public List<OrderVo> queryOrderByUid(Integer uid, Integer status) {
+        List<OrderVo> allOrders = orderMapper.queryOrderVoByUid(uid);
+        if (allOrders.isEmpty()) {
+            throw new OrderNotFoundException("没有查询到订单！");
+        }
+        if (status == -1) {
+            return allOrders;
+        }
+        List<OrderVo> res = allOrders.stream().filter(order -> Objects.equals(order.getStatus(), status)).toList();
+        if (res.isEmpty()) {
+            throw new OrderNotFoundException("没有查询到目标状态的订单！");
+        }
+        return res;
+    }
+
+    @Override
+    public List<OrderVo> queryOrderInfo(Integer oid) {
+        List<OrderVo> orderVos = orderMapper.queryOrderVoByOid(oid);
+        return orderVos;
     }
 }

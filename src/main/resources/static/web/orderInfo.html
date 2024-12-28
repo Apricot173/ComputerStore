@@ -21,6 +21,7 @@
 		<link rel="stylesheet" type="text/css" href="../css/footer.css" />
 		<link rel="stylesheet" type="text/css" href="../css/orderInfo.css" />
 		<link rel="stylesheet" type="text/css" href="../css/order.css" />
+		<script type="text/javascript" src="../js/jquery-getUrlParam.js"></script>
 	</head>
 
 	<body>
@@ -61,6 +62,91 @@
 					</ul>
 				</div>
 			</div>
+
+			<script type="text/javascript">
+				function showOrder(oid) {
+					$.ajax({
+						url : "/order/queryOrderInfo/" + oid,
+						type: "get",
+						contentType: "application/json",
+						success: function (res) {
+							let tempOrder = res.data[0]
+							//转换时间
+							let order = tempOrder.orderTime;
+							let pay = tempOrder.payTime;
+							//构建虚拟的发货时间
+							let send = tempOrder.orderTime;
+							//构建虚拟的收货时间
+							let ensure = tempOrder.orderTime;
+
+							//修改状态信息
+							$("#orderVoId").html(tempOrder.oid)
+
+							let orderStatus = JSON.parse(tempOrder.status);
+							//根据订单状态修改状态描述信息
+							if (orderStatus === 2){
+								$("#orderStatus").html("已取消")
+								//删除对应的样式
+								$("li").removeClass("order-success")
+								$("span").removeClass("fa fa-check-circle")
+								$("#tranInfo").empty().html("<p style='font-size: larger' >无<p>")
+							}else if(orderStatus === 0){
+								$("#orderStatus").html("未付款")
+								//删除对应的样式
+								$("li").removeClass("order-success")
+								$("span").removeClass("fa fa-check-circle")
+								$("#tranInfo").empty().html("<p style='font-size: larger' >无<p>")
+							}else if (orderStatus === 1){
+								$("#orderStatus").html("已付款")
+								$("#orderTime").html(order)
+								$("#payTime").html(pay)
+								//删除商场发货的样式
+								$(".order-flow").children("li:eq(2)").removeClass("order-success")
+								$(".order-flow").find("li:eq(2)").children("span").removeClass("fa fa-check-circle")
+								//删除物流信息
+								$("#tranInfo").empty().html("<p style='font-size: larger' >无<p>")
+							} else if (orderStatus === 4){
+								$("#orderStatus").html("已完成")
+							}
+							//修改地址详情
+							$("#recvName").html(tempOrder.recvName)
+							$("#zip").html(tempOrder.zip)
+							$("#phone").html(tempOrder.phone)
+							$("#address").html(tempOrder.provinceName + tempOrder.cityName
+									+ tempOrder.areaName + tempOrder.address)
+							//修改商品详情
+							$("#orderVoId2").html(tempOrder.oid)
+							$("#orderTime2").html(order)
+							$("#recvName2").html(tempOrder.recvName)
+							for (let i = 0; i < res.data.length; i++) {
+								let str = "";
+								let orderVo = res.data[i]
+								str = "<tr>"
+										+ "<td><img src=.." + orderVo.image + "collect.png" + " class=\"img-responsive\" /></td>"
+										+ "<td>" + orderVo.title + "</td>"
+										+ "<td>¥<span>" + orderVo.price + "</span></td>"
+										+ "<td>" + orderVo.num +"</td>"
+										+ "<td>¥<span>" + orderVo.price * orderVo.num + "</span></td>"
+										+ "</tr>"
+								//将每个商品逐个插入到表格中
+								$(".orders-body").append(str)
+							}
+							//改变订单总金额
+							$("#totalPrice").html(tempOrder.totalPrice)
+						},
+						error: function (error) {
+							alert("服务器出现故障，请等待攻城狮修复！！")
+						}
+					});
+				}
+
+				$(document).ready(function () {
+					let oid = $.getUrlParam("oid")
+					showOrder(oid);
+				});
+			</script>
+
+
 		</header>
 		<!--导航 -->
 		<!--分割导航和顶部-->
@@ -83,51 +169,78 @@
 		<!--头部结束-->
 		<!--导航结束-->
 		<!--页面主体开始-->
-		<div class="container">
-			<div class="col-md-2">
-				<!--左侧导航开始-->
-				<div class="panel-group" id="accordion">
+
+			<div class="container">
+				<div class="col-md-offset-1 col-md-10">
+					<h1>订单详情：</h1>
+					<h2 class="page-header">状态信息：</h2>
+					<div class="state-bar">
+						订单号：<span id="orderVoId"></span> ，
+						当前状态：
+						<span id="orderStatus"></span>
+					</div>
+					<ol class="order-flow">
+						<li class="order-success">1.提交订单 <small id="orderTime"></small> <span class="fa fa-check-circle"></span></li>
+						<li class="order-success">2.付款成功 <small id="payTime"></small> <span class="fa fa-check-circle"></span></li>
+						<li class="order-success">3.商城发货 <small id="sentTime"></small> <span class="fa fa-check-circle"></span></li>
+						<li>4.用户收货 <small id="ensureTime"></small> </li>
+						<li>5.购物评价</li>
+					</ol>
+					<h2 class="page-header">地址详情：</h2>
+					<p>收货人姓名：<span id="recvName"></span>，
+						邮政编码：<span id="zip"></span>，
+						联系电话： <span id="phone"></span>
+					</p>
+					<p>收货地址：
+						<span id="address">
+
+					</span>
+					</p>
+<!--					<h2 class="page-header">物流信息：</h2>-->
+<!--					<div id="tranInfo">-->
+<!--						<p>发货时间：2022-07-23 14:09</p>-->
+<!--						<p>物流公司：顺丰快递</p>-->
+<!--						<p>快递单号：301111303203048</p>-->
+<!--						<p>物流信息：</p>-->
+<!--						<p>2022-07-24 18:09:30 您的快递在【xx国贸分拣中心】准备装车</p>-->
+<!--						<p>2022-07-25 08:39:50 您的快递在【xx转运中心】分拣完毕</p>-->
+<!--						<p>2022-07-25 23:18:07 您的快递到达【xx派发中心】</p>-->
+<!--					</div>-->
+
+					<h2 class="page-header">商品详情：</h2>
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<!--主选项：我的订单-->
-							<p class="panel-title">
-								<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">我的订单</a>
-							</p>
+							<h3 class="panel-title">
+								订单号：<span id="orderVoId2"></span>，
+								下单时间：<span id="orderTime2"></span> ，
+								收货人：<span id="recvName2"></span>
+							</h3>
 						</div>
-						<div id="collapseOne" class="panel-collapse collapse in">
-							<div class="panel-body">
-								<div><a  onclick="return getUserOrderByUid('')"><b>全部订单</b></a></div>
-								<div><a  onclick="return getUserOrderByUid(0)">未付款</a></div>
-								<div><a  onclick="return getUserOrderByUid(1)">已付款</a></div>
-								<div><a  onclick="return getUserOrderByUid(2)">已取消</a></div>
-								<div><a  onclick="return getUserOrderByUid(3)">已关闭</a></div>
-								<div><a  onclick="return getUserOrderByUid(4)">已完成</a></div>
+						<div class="panel-body">
+							<table class="orders-table">
+								<thead>
+								<tr>
+									<th width="15%"></th>
+									<th width="35%">商品</th>
+									<th width="15%">单价</th>
+									<th width="15%">数量</th>
+									<th width="20%">小计</th>
+								</tr>
+								</thead>
+								<tbody class="orders-body">
+								<!--待填充内容-->
+
+								</tbody>
+							</table>
+							<div>
+								<span class="pull-right">订单总金额：¥<span id="totalPrice"></span></span>
 							</div>
 						</div>
 					</div>
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<!--主选项：资料修改-->
-							<p class="panel-title">
-								<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">资料修改</a>
-							</p>
-						</div>
-						<div id="collapseTwo" class="panel-collapse collapse">
-							<div class="panel-body">
-								<div><a href="password.html"><b>修改密码</b></a></div>
-								<div><a href="userdata.html">个人资料</a></div>
-								<div><a href="upload.html">上传头像</a></div>
-								<div><a href="address.html">收货管理</a></div>
-							</div>
-						</div>
-					</div>
+					<a href="orders.html">返回</a>
 				</div>
 			</div>
-			<!--左侧导航结束-->
-			<div id="orderDetail" class="col-md-10">
-				<!--		填充内容		-->
 
-			</div>
 		</div>
 		<!--页脚开始-->
 		<div class="clearfix"></div>

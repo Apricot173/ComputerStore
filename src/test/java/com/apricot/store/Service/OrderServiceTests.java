@@ -1,6 +1,7 @@
 package com.apricot.store.Service;
 
 import com.apricot.store.Entity.OrderItem;
+import com.apricot.store.Entity.dto.OrderVo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,15 @@ public class OrderServiceTests {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void t2test() {
+        List<OrderVo> items1 = orderService.queryOrderByUid(26, 0);
+        items1.forEach(item -> System.out.println(item.toString()));
+
+        List<OrderVo> items2 = orderService.queryOrderByUid(26, 1);
+        items2.forEach(item -> System.out.println(item.toString()));
     }
 
 }

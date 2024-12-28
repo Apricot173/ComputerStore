@@ -2,6 +2,7 @@ package com.apricot.store.Mapper;
 
 import com.apricot.store.Entity.Order;
 import com.apricot.store.Entity.OrderItem;
+import com.apricot.store.Entity.dto.OrderVo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
@@ -37,4 +38,23 @@ public interface OrderMapper {
     @Update("update t_order set status = #{status}, pay_time = #{payTime}, " +
             "modified_user = #{modifiedUser}, modified_time = #{modifiedTime} where oid = #{oid}")
     Integer updateStatusByOid(Integer oid, Integer status, Date payTime, String modifiedUser, Date modifiedTime);
+
+    // 根据订单状态查询订单列表
+    @Select("SELECT od.`oid`,od.`recv_name`,od.`total_price`, od.`status`,od.`order_time`, orm.`image`,orm.`title`, orm.`price`,orm.`num`" +
+            "FROM t_order od " +
+            "LEFT JOIN t_order_item orm ON od.`oid` = orm.`oid`" +
+            "WHERE od.uid = #{uid} ORDER BY od.`order_time` DESC;")
+    List<OrderVo> queryOrderVoByUid(Integer uid);
+
+    // 根据oid查询订单详情
+    @Select("SELECT od.`oid`,od.`recv_name`,od.`total_price`, od.`status`,od.`created_time` as order_time," +
+            "od.pay_time ,od.recv_province as province_name, od.recv_city as city_name, od.recv_area as area_name, " +
+            "od.recv_address as address, od.recv_phone as phone," +
+            "orm.`image`,orm.`title`, orm.`price`,orm.`num`" +
+            "FROM t_order od " +
+            "LEFT JOIN t_order_item orm ON od.`oid` = orm.`oid`" +
+            "WHERE od.oid = #{oid} ORDER BY orm.`price` DESC;")
+    List<OrderVo> queryOrderVoByOid(Integer oid);
+
+
 }

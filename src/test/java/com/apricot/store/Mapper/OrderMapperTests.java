@@ -2,6 +2,7 @@ package com.apricot.store.Mapper;
 
 import com.apricot.store.Entity.Order;
 import com.apricot.store.Entity.OrderItem;
+import com.apricot.store.Entity.dto.OrderVo;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.internal.matchers.Or;
@@ -53,6 +54,18 @@ public class OrderMapperTests {
     public void testFindAllItemsByOid() {
         List<OrderItem> orderItems = orderMapper.queryOrderItemsByOid(1);
         orderItems.forEach(System.out::println);
+    }
+
+    @Test
+    public void t2() {
+        List<OrderVo> res = orderMapper.queryOrderVoByUid(26);
+        res.forEach(System.out::println);
+    }
+
+    @Test
+    public void t3() {
+        List<OrderVo> res = orderMapper.queryOrderVoByOid(29);
+        res.forEach(System.out::println);
     }
 
 }

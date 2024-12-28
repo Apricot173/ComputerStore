@@ -1,6 +1,7 @@
 package com.apricot.store.Controller;
 
 import com.apricot.store.Entity.Order;
+import com.apricot.store.Entity.dto.OrderVo;
 import com.apricot.store.Service.IOrderService;
 import com.apricot.store.Utils.JsonResult;
 import jakarta.servlet.http.HttpSession;
@@ -52,5 +53,20 @@ public class OrderController extends BaseController{
         String username = getUsernameFromSession(session);
         Integer newStatus = orderService.updateOrderStatus(oid, status, username);
         return new JsonResult(SUCCESS_CODE, "更新订单状态成功", newStatus);
+    }
+
+    @GetMapping("/queryOrdersByUid/{status}")
+    public JsonResult queryOrderVoByUid(@PathVariable Integer status, HttpSession session){
+        //System.out.println("status: " + status);
+        Integer uid = getUserIdFromSession(session);
+        List<OrderVo> orderVos = orderService.queryOrderByUid(uid, status);
+
+        return new JsonResult(SUCCESS_CODE, "获取订单列表成功", orderVos);
+    }
+
+    @GetMapping("/queryOrderInfo/{oid}")
+    public JsonResult queryOrderInfo(@PathVariable Integer oid){
+        List<OrderVo> orderVos = orderService.queryOrderInfo(oid);
+        return new JsonResult(SUCCESS_CODE, "获取订单详情成功", orderVos);
     }
 }
